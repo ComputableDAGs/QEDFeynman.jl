@@ -37,7 +37,7 @@ end
 
 Base type for particle scattering process descriptions. An object of this type of a corresponding [`AbstractPhysicsModel`](@ref) should uniquely identify a scattering process in that model.
 
-See also: [`parse_process`](@ref), [`AbstractProblemInstance`](@ref)
+See also: [`parse_process`](@ref)
 """
 abstract type AbstractProcessDescription end
 
@@ -101,7 +101,7 @@ function model end
 """
     type_from_name(model::AbstractModel, name::String)
 
-For a name of a particle in the given [`AbstractModel`](@ref), return the particle's [`Type`] and index as a tuple. The input string can be expetced to be of the form \"<name><index>\".
+For a name of a particle in the given `AbstractModel`, return the particle's `Type` and index as a tuple. The input string can be expetced to be of the form \"<name><index>\".
 """
 function type_index_from_name end
 
@@ -110,7 +110,7 @@ function type_index_from_name end
 
 Return the [`ParticleValue`](@ref) of the given type of particle with the given `index` from the given process input.
 
-Function is wrapped into a [`FunctionCall`](@ref) in [`gen_input_assignment_code`](@ref).
+Function is wrapped into a `FunctionCall` in `gen_input_assignment_code`.
 """
 part_from_x(type::Type, index::Int, x::AbstractProcessInput) =
     ParticleValue{type,ComplexF64}(get_particle(x, type, index), one(ComplexF64))

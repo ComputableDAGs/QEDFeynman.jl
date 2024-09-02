@@ -1,34 +1,27 @@
+using Pkg
+
+project_path = Base.Filesystem.joinpath(Base.Filesystem.dirname(Base.source_path()), "..")
+Pkg.develop(; path=project_path)
+
 using Documenter
 using QEDFeynman
-using GraphComputing
 
 makedocs(;
-    #format = Documenter.LaTeX(platform=""),
-
-    root="docs",
-    source="src",
-    build="build",
-    warnonly=true,
-    clean=true,
-    doctest=true,
-    modules=Module[QEDFeynman],
-    remotes=nothing,
+    modules=[QEDFeynman],
+    checkdocs=:exports,
+    authors="Anton Reinhard",
+    repo=Documenter.Remotes.GitHub("GraphComputing-jl", "QEDFeynman.jl"),
     sitename="QEDFeynman.jl",
-    pages=[
-        "index.md",
-        "Manual" => "manual.md",
-        "Library" => [
-            "Public" => "lib/public.md",
-            "Graph" => "lib/internals/graph.md",
-            "Node" => "lib/internals/node.md",
-            "Task" => "lib/internals/task.md",
-            "Operation" => "lib/internals/operation.md",
-            "Models" => "lib/internals/models.md",
-            "Diff" => "lib/internals/diff.md",
-            "Utility" => "lib/internals/utility.md",
-            "Code Generation" => "lib/internals/code_gen.md",
-            "Devices" => "lib/internals/devices.md",
-        ],
-        "Contribution" => "contribution.md",
-    ],
+    format=Documenter.HTML(;
+        prettyurls=get(ENV, "CI", "false") == "true",
+        canonical="https://graphcomputing.gitlab.io/QEDFeynman.jl",
+        assets=String[],
+        size_threshold_ignore=["index.md"],
+    ),
+    pages=["index.md"],
+)
+deploydocs(;
+    repo="github.com/GraphComputing-jl/QEDFeynman.jl.git",
+    push_preview=false,
+    devbranch="main",
 )

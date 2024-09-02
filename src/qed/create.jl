@@ -16,7 +16,7 @@ end
 """
     gen_process_input(processDescription::ScatteringProcess)
 
-Return a ProcessInput of randomly generated [`QEDParticle`](@ref)s from a `QEDprocesses.ScatteringProcess`. The process description can be created manually or parsed from a string using [`parse_process`](@ref).
+Return a `PhaseSpacePoint` of randomly generated particles from a `QEDprocesses.ScatteringProcess`. The process description can be created manually or parsed from a string using [`parse_process`](@ref).
 
 Note: This uses RAMBO to create a valid process with conservation of momentum and energy.
 """
@@ -51,7 +51,7 @@ end
 """
     gen_graph(process_description::ScatteringProcess)
 
-For a given `QEDprocesses.ScatteringProcess`, return the [`DAG`](@ref) that computes it.
+For a given `QEDprocesses.ScatteringProcess`, return the `DAG` that computes it.
 """
 function gen_graph(process_description::ScatteringProcess)
     initial_diagram = FeynmanDiagram(process_description)

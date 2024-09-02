@@ -389,9 +389,9 @@ end
 """
     can_tie(p1::Type, p2::Type)
 
-For two given [`QEDParitcle`](@ref) types, return whether they can be tied together.
+For two given `QEDParticle` types, return whether they can be tied together.
 
-They can be tied iff one is the [`propagation_result`](@ref) of the other, or if both are photons, in which case their direction does not matter.
+They can be tied iff one is the `propagation_result` of the other, or if both are photons, in which case their direction does not matter.
 """
 function can_tie(p1::Type, p2::Type)
     if p1 == propagation_result(p2)
@@ -460,7 +460,7 @@ end
 """
     gen_compton_diagram_from_order(order::Vector{Int}, inFerm, outFerm, n::Int, m::Int)
 
-Helper function for [`gen_compton_diagrams`](@Ref). Generates a single diagram for the given order and n input and m output photons.
+Helper function for [`gen_compton_diagrams`](@ref). Generates a single diagram for the given order and n input and m output photons.
 """
 function gen_compton_diagram_from_order(order::Vector{Int}, inFerm, outFerm, n::Int, m::Int)
     photons = vcat(
@@ -523,7 +523,7 @@ end
 """
     gen_compton_diagram_from_order_one_side(order::Vector{Int}, inFerm, outFerm, n::Int, m::Int)
 
-Helper function for [`gen_compton_diagrams`](@Ref). Generates a single diagram for the given order and n input and m output photons.
+Helper function for [`gen_compton_diagrams`](@ref). Generates a single diagram for the given order and n input and m output photons.
 """
 function gen_compton_diagram_from_order_one_side(
     order::Vector{Int}, inFerm, outFerm, n::Int, m::Int
@@ -638,7 +638,7 @@ end
 """
     gen_diagrams(fd::FeynmanDiagram)
 
-From a given feynman diagram in its initial state, e.g. when created through the [`FeynmanDiagram(pd::ProcessDescription)`](@ref) constructor, generate and return all possible [`FeynmanDiagram`](@ref)s that describe that process.
+From a given feynman diagram in its initial state, e.g. when created through the [`FeynmanDiagram`](@ref)`(pd::ProcessDescription)` constructor, generate and return all possible [`FeynmanDiagram`](@ref)s that describe that process.
 """
 function gen_diagrams(fd::FeynmanDiagram)
     if is_compton(fd)

@@ -61,7 +61,7 @@ end
 
 Read an ABC-model process from the given file. If `verbose` is set to true, print some progress information to stdout.
 
-Returns a valid [`DAG`](@ref).
+Returns a valid `DAG`.
 """
 function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::Bool=false)
     file = open(filename, "r")

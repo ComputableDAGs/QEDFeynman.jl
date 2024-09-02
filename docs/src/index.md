@@ -1,6 +1,12 @@
-# QED Model
+# Models
 
-## Interface
+```@autodocs
+Modules = [QEDFeynman]
+Pages = ["QEDFeynman.jl"]
+Order = [:module]
+```
+
+## Interface and General
 
 The interface that has to be implemented for a model to be usable is defined in `src/interface.jl`.
 
@@ -12,7 +18,13 @@ Order = [:type, :constant, :function]
 
 ```@autodocs
 Modules = [QEDFeynman]
-Pages = ["print.jl"]
+Pages = ["impl.jl"]
+Order = [:function]
+```
+
+```@autodocs
+Modules = [QEDFeynman]
+Pages = ["utility.jl"]
 Order = [:function]
 ```
 
@@ -23,6 +35,12 @@ Order = [:function]
 Modules = [QEDFeynman]
 Pages = ["abc/types.jl"]
 Order   = [:type, :constant]
+```
+
+```@autodocs
+Modules = [QEDFeynman]
+Pages = ["abc/generic_abc_process.jl"]
+Order   = [:type, :function, :constant]
 ```
 
 ### Particle

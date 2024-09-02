@@ -1,7 +1,7 @@
 """
     parse_process(string::AbstractString, model::QEDModel)
 
-Parse a string representation of a process, such as "ke->ke" into the corresponding [`QEDProcessDescription`](@ref).
+Parse a string representation of a process, such as "ke->ke" into the corresponding `QEDProcessDescription`.
 """
 function parse_process(
     str::AbstractString,
