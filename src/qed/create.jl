@@ -64,8 +64,8 @@ function gen_graph(process_description::ScatteringProcess)
 
     # TODO: Not all diagram outputs should always be summed at the end, if they differ by fermion exchange they need to be diffed
     # Should not matter for n-Photon Compton processes though
-    sum_node = insert_node!(graph, make_node(ComputeTaskQED_Sum(0)))
-    global_data_out = insert_node!(graph, make_node(DataTask(COMPLEX_SIZE)))
+    sum_node = insert_node!(graph, ComputeTaskQED_Sum(0))
+    global_data_out = insert_node!(graph, DataTask(COMPLEX_SIZE))
     insert_edge!(graph, sum_node, global_data_out)
 
     # remember the data out nodes for connection
@@ -73,11 +73,9 @@ function gen_graph(process_description::ScatteringProcess)
 
     for particle in initial_diagram.particles
         # generate data in and U tasks
-        data_in = insert_node!(
-            graph, make_node(DataTask(PARTICLE_VALUE_SIZE), String(particle))
-        ) # read particle data node
-        compute_u = insert_node!(graph, make_node(ComputeTaskQED_U())) # compute U node
-        data_out = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE))) # transfer data out from u (one ParticleValue object)
+        data_in = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE), String(particle)) # read particle data node
+        compute_u = insert_node!(graph, ComputeTaskQED_U()) # compute U node
+        data_out = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE)) # transfer data out from u (one ParticleValue object)
 
         insert_edge!(graph, data_in, compute_u)
         insert_edge!(graph, compute_u, data_out)
@@ -96,12 +94,12 @@ function gen_graph(process_description::ScatteringProcess)
                 data_in1 = dataOutNodes[String(vertex.in1)]
                 data_in2 = dataOutNodes[String(vertex.in2)]
 
-                compute_V = insert_node!(graph, make_node(ComputeTaskQED_V())) # compute vertex
+                compute_V = insert_node!(graph, ComputeTaskQED_V()) # compute vertex
 
                 insert_edge!(graph, data_in1, compute_V)
                 insert_edge!(graph, data_in2, compute_V)
 
-                data_V_out = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+                data_V_out = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
                 insert_edge!(graph, compute_V, data_V_out)
 
@@ -112,11 +110,11 @@ function gen_graph(process_description::ScatteringProcess)
                 end
 
                 # otherwise, add S1 task
-                compute_S1 = insert_node!(graph, make_node(ComputeTaskQED_S1())) # compute propagator
+                compute_S1 = insert_node!(graph, ComputeTaskQED_S1()) # compute propagator
 
                 insert_edge!(graph, data_V_out, compute_S1)
 
-                data_S1_out = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+                data_S1_out = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
                 insert_edge!(graph, compute_S1, data_S1_out)
 
@@ -129,9 +127,9 @@ function gen_graph(process_description::ScatteringProcess)
         data_in1 = dataOutNodes[String(tie.in1)]
         data_in2 = dataOutNodes[String(tie.in2)]
 
-        compute_S2 = insert_node!(graph, make_node(ComputeTaskQED_S2()))
+        compute_S2 = insert_node!(graph, ComputeTaskQED_S2())
 
-        data_S2 = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+        data_S2 = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
         insert_edge!(graph, data_in1, compute_S2)
         insert_edge!(graph, data_in2, compute_S2)

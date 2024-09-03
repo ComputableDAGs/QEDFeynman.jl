@@ -163,52 +163,52 @@ end
     graph = DAG()
 
     # s to output (exit node)
-    d_exit = insert_node!(graph, make_node(DataTask(16)))
+    d_exit = insert_node!(graph, DataTask(16))
 
-    sum_node = insert_node!(graph, make_node(ComputeTaskQED_Sum(2)))
+    sum_node = insert_node!(graph, ComputeTaskQED_Sum(2))
 
-    d_s0_sum = insert_node!(graph, make_node(DataTask(16)))
-    d_s1_sum = insert_node!(graph, make_node(DataTask(16)))
+    d_s0_sum = insert_node!(graph, DataTask(16))
+    d_s1_sum = insert_node!(graph, DataTask(16))
 
     # final s compute
-    s0 = insert_node!(graph, make_node(ComputeTaskQED_S2()))
-    s1 = insert_node!(graph, make_node(ComputeTaskQED_S2()))
+    s0 = insert_node!(graph, ComputeTaskQED_S2())
+    s1 = insert_node!(graph, ComputeTaskQED_S2())
 
     # data from v0 and v1 to s0
-    d_v0_s0 = insert_node!(graph, make_node(DataTask(96)))
-    d_v1_s0 = insert_node!(graph, make_node(DataTask(96)))
-    d_v2_s1 = insert_node!(graph, make_node(DataTask(96)))
-    d_v3_s1 = insert_node!(graph, make_node(DataTask(96)))
+    d_v0_s0 = insert_node!(graph, DataTask(96))
+    d_v1_s0 = insert_node!(graph, DataTask(96))
+    d_v2_s1 = insert_node!(graph, DataTask(96))
+    d_v3_s1 = insert_node!(graph, DataTask(96))
 
     # v0 and v1 compute
-    v0 = insert_node!(graph, make_node(ComputeTaskQED_V()))
-    v1 = insert_node!(graph, make_node(ComputeTaskQED_V()))
-    v2 = insert_node!(graph, make_node(ComputeTaskQED_V()))
-    v3 = insert_node!(graph, make_node(ComputeTaskQED_V()))
+    v0 = insert_node!(graph, ComputeTaskQED_V())
+    v1 = insert_node!(graph, ComputeTaskQED_V())
+    v2 = insert_node!(graph, ComputeTaskQED_V())
+    v3 = insert_node!(graph, ComputeTaskQED_V())
 
     # data from uPhIn, uPhOut, uElIn, uElOut to v0 and v1
-    d_uPhIn_v0 = insert_node!(graph, make_node(DataTask(96)))
-    d_uElIn_v0 = insert_node!(graph, make_node(DataTask(96)))
-    d_uPhOut_v1 = insert_node!(graph, make_node(DataTask(96)))
-    d_uElOut_v1 = insert_node!(graph, make_node(DataTask(96)))
+    d_uPhIn_v0 = insert_node!(graph, DataTask(96))
+    d_uElIn_v0 = insert_node!(graph, DataTask(96))
+    d_uPhOut_v1 = insert_node!(graph, DataTask(96))
+    d_uElOut_v1 = insert_node!(graph, DataTask(96))
 
     # data from uPhIn, uPhOut, uElIn, uElOut to v2 and v3
-    d_uPhOut_v2 = insert_node!(graph, make_node(DataTask(96)))
-    d_uElIn_v2 = insert_node!(graph, make_node(DataTask(96)))
-    d_uPhIn_v3 = insert_node!(graph, make_node(DataTask(96)))
-    d_uElOut_v3 = insert_node!(graph, make_node(DataTask(96)))
+    d_uPhOut_v2 = insert_node!(graph, DataTask(96))
+    d_uElIn_v2 = insert_node!(graph, DataTask(96))
+    d_uPhIn_v3 = insert_node!(graph, DataTask(96))
+    d_uElOut_v3 = insert_node!(graph, DataTask(96))
 
     # uPhIn, uPhOut, uElIn and uElOut computes
-    uPhIn = insert_node!(graph, make_node(ComputeTaskQED_U()))
-    uPhOut = insert_node!(graph, make_node(ComputeTaskQED_U()))
-    uElIn = insert_node!(graph, make_node(ComputeTaskQED_U()))
-    uElOut = insert_node!(graph, make_node(ComputeTaskQED_U()))
+    uPhIn = insert_node!(graph, ComputeTaskQED_U())
+    uPhOut = insert_node!(graph, ComputeTaskQED_U())
+    uElIn = insert_node!(graph, ComputeTaskQED_U())
+    uElOut = insert_node!(graph, ComputeTaskQED_U())
 
     # data into U
-    d_uPhIn = insert_node!(graph, make_node(DataTask(16), "ki1"))
-    d_uPhOut = insert_node!(graph, make_node(DataTask(16), "ko1"))
-    d_uElIn = insert_node!(graph, make_node(DataTask(16), "ei1"))
-    d_uElOut = insert_node!(graph, make_node(DataTask(16), "eo1"))
+    d_uPhIn = insert_node!(graph, DataTask(16), "ki1")
+    d_uPhOut = insert_node!(graph, DataTask(16), "ko1")
+    d_uElIn = insert_node!(graph, DataTask(16), "ei1")
+    d_uElOut = insert_node!(graph, DataTask(16), "eo1")
 
     # now for all the edges
     insert_edge!(graph, d_uPhIn, uPhIn)
