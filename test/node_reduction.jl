@@ -3,29 +3,29 @@ using GraphComputing
 
 graph = DAG()
 
-d_exit = insert_node!(graph, make_node(DataTask(10)))
+d_exit = insert_node!(graph, DataTask(10))
 
-s0 = insert_node!(graph, make_node(ComputeTaskABC_S2()))
+s0 = insert_node!(graph, ComputeTaskABC_S2())
 
-ED = insert_node!(graph, make_node(DataTask(3)))
-FD = insert_node!(graph, make_node(DataTask(3)))
+ED = insert_node!(graph, DataTask(3))
+FD = insert_node!(graph, DataTask(3))
 
-EC = insert_node!(graph, make_node(ComputeTaskABC_V()))
-FC = insert_node!(graph, make_node(ComputeTaskABC_V()))
+EC = insert_node!(graph, ComputeTaskABC_V())
+FC = insert_node!(graph, ComputeTaskABC_V())
 
-A1D = insert_node!(graph, make_node(DataTask(4)))
-B1D_1 = insert_node!(graph, make_node(DataTask(4)))
-B1D_2 = insert_node!(graph, make_node(DataTask(4)))
-C1D = insert_node!(graph, make_node(DataTask(4)))
+A1D = insert_node!(graph, DataTask(4))
+B1D_1 = insert_node!(graph, DataTask(4))
+B1D_2 = insert_node!(graph, DataTask(4))
+C1D = insert_node!(graph, DataTask(4))
 
-A1C = insert_node!(graph, make_node(ComputeTaskABC_U()))
-B1C_1 = insert_node!(graph, make_node(ComputeTaskABC_U()))
-B1C_2 = insert_node!(graph, make_node(ComputeTaskABC_U()))
-C1C = insert_node!(graph, make_node(ComputeTaskABC_U()))
+A1C = insert_node!(graph, ComputeTaskABC_U())
+B1C_1 = insert_node!(graph, ComputeTaskABC_U())
+B1C_2 = insert_node!(graph, ComputeTaskABC_U())
+C1C = insert_node!(graph, ComputeTaskABC_U())
 
-AD = insert_node!(graph, make_node(DataTask(5)))
-BD = insert_node!(graph, make_node(DataTask(5)))
-CD = insert_node!(graph, make_node(DataTask(5)))
+AD = insert_node!(graph, DataTask(5))
+BD = insert_node!(graph, DataTask(5))
+CD = insert_node!(graph, DataTask(5))
 
 insert_edge!(graph, s0, d_exit)
 insert_edge!(graph, ED, s0)

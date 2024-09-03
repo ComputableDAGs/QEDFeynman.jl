@@ -88,8 +88,8 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
     end
     sizehint!(graph.nodes, estimate_no_nodes)
 
-    sum_node = insert_node!(graph, make_node(ComputeTaskABC_Sum(0)))
-    global_data_out = insert_node!(graph, make_node(DataTask(FLOAT_SIZE)))
+    sum_node = insert_node!(graph, ComputeTaskABC_Sum(0))
+    global_data_out = insert_node!(graph, DataTask(FLOAT_SIZE))
     insert_edge!(graph, sum_node, global_data_out)
 
     # remember the data out nodes for connection
@@ -113,11 +113,11 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             name = _node_name(string(node), proc)
 
             # add nodes and edges for the state reading to u(P(Particle))
-            data_in = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE), name)) # read particle data node
-            compute_P = insert_node!(graph, make_node(ComputeTaskABC_P())) # compute P node
-            data_Pu = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE))) # transfer data from P to u (one ParticleValue object)
-            compute_u = insert_node!(graph, make_node(ComputeTaskABC_U())) # compute U node
-            data_out = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE))) # transfer data out from u (one ParticleValue object)
+            data_in = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE), name) # read particle data node
+            compute_P = insert_node!(graph, ComputeTaskABC_P()) # compute P node
+            data_Pu = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE)) # transfer data from P to u (one ParticleValue object)
+            compute_u = insert_node!(graph, ComputeTaskABC_U()) # compute U node
+            data_out = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE)) # transfer data out from u (one ParticleValue object)
 
             insert_edge!(graph, data_in, compute_P)
             insert_edge!(graph, compute_P, data_Pu)
@@ -132,13 +132,13 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             in1 = capt.captures[1]
             in2 = capt.captures[2]
 
-            compute_v = insert_node!(graph, make_node(ComputeTaskABC_V()))
-            data_out = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+            compute_v = insert_node!(graph, ComputeTaskABC_V())
+            data_out = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
             if (occursin(regex_c, in1))
                 # put an S node after this input
-                compute_S = insert_node!(graph, make_node(ComputeTaskABC_S1()))
-                data_S_v = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+                compute_S = insert_node!(graph, ComputeTaskABC_S1())
+                data_S_v = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
                 insert_edge!(graph, dataOutNodes[in1], compute_S)
                 insert_edge!(graph, compute_S, data_S_v)
@@ -151,8 +151,8 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             if (occursin(regex_c, in2))
                 # i think the current generator only puts the combined particles in the first space, so this case might never be entered
                 # put an S node after this input
-                compute_S = insert_node!(graph, make_node(ComputeTaskABC_S1()))
-                data_S_v = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+                compute_S = insert_node!(graph, ComputeTaskABC_S1())
+                data_S_v = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
                 insert_edge!(graph, dataOutNodes[in2], compute_S)
                 insert_edge!(graph, compute_S, data_S_v)
@@ -173,16 +173,16 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             in3 = capt.captures[3]
 
             # in2 + in3 with a v
-            compute_v = insert_node!(graph, make_node(ComputeTaskABC_V()))
-            data_v = insert_node!(graph, make_node(DataTask(PARTICLE_VALUE_SIZE)))
+            compute_v = insert_node!(graph, ComputeTaskABC_V())
+            data_v = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
             insert_edge!(graph, dataOutNodes[in2], compute_v)
             insert_edge!(graph, dataOutNodes[in3], compute_v)
             insert_edge!(graph, compute_v, data_v)
 
             # combine with the v of the combined other input
-            compute_S2 = insert_node!(graph, make_node(ComputeTaskABC_S2()))
-            data_out = insert_node!(graph, make_node(DataTask(FLOAT_SIZE))) # output of a S2 task is only a float
+            compute_S2 = insert_node!(graph, ComputeTaskABC_S2())
+            data_out = insert_node!(graph, DataTask(FLOAT_SIZE)) # output of a S2 task is only a float
 
             insert_edge!(graph, data_v, compute_S2)
             insert_edge!(graph, dataOutNodes[in1], compute_S2)

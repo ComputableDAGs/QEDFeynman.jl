@@ -11,54 +11,54 @@ graph = DAG()
 @test length(get_operations(graph)) == (nodeReductions=0, nodeSplits=0)
 
 # s to output (exit node)
-d_exit = insert_node!(graph, make_node(DataTask(10)))
+d_exit = insert_node!(graph, DataTask(10))
 
 @test length(graph.nodes) == 1
 @test length(graph.dirtyNodes) == 0
 
 # final s compute
-s0 = insert_node!(graph, make_node(ComputeTaskABC_S2()))
+s0 = insert_node!(graph, ComputeTaskABC_S2())
 
 @test length(graph.nodes) == 2
 @test length(graph.dirtyNodes) == 0
 
 # data from v0 and v1 to s0
-d_v0_s0 = insert_node!(graph, make_node(DataTask(5)))
-d_v1_s0 = insert_node!(graph, make_node(DataTask(5)))
+d_v0_s0 = insert_node!(graph, DataTask(5))
+d_v1_s0 = insert_node!(graph, DataTask(5))
 
 # v0 and v1 compute
-v0 = insert_node!(graph, make_node(ComputeTaskABC_V()))
-v1 = insert_node!(graph, make_node(ComputeTaskABC_V()))
+v0 = insert_node!(graph, ComputeTaskABC_V())
+v1 = insert_node!(graph, ComputeTaskABC_V())
 
 # data from uB, uA, uBp and uAp to v0 and v1
-d_uB_v0 = insert_node!(graph, make_node(DataTask(3)))
-d_uA_v0 = insert_node!(graph, make_node(DataTask(3)))
-d_uBp_v1 = insert_node!(graph, make_node(DataTask(3)))
-d_uAp_v1 = insert_node!(graph, make_node(DataTask(3)))
+d_uB_v0 = insert_node!(graph, DataTask(3))
+d_uA_v0 = insert_node!(graph, DataTask(3))
+d_uBp_v1 = insert_node!(graph, DataTask(3))
+d_uAp_v1 = insert_node!(graph, DataTask(3))
 
 # uB, uA, uBp and uAp computes
-uB = insert_node!(graph, make_node(ComputeTaskABC_U()))
-uA = insert_node!(graph, make_node(ComputeTaskABC_U()))
-uBp = insert_node!(graph, make_node(ComputeTaskABC_U()))
-uAp = insert_node!(graph, make_node(ComputeTaskABC_U()))
+uB = insert_node!(graph, ComputeTaskABC_U())
+uA = insert_node!(graph, ComputeTaskABC_U())
+uBp = insert_node!(graph, ComputeTaskABC_U())
+uAp = insert_node!(graph, ComputeTaskABC_U())
 
 # data from PB, PA, PBp and PAp to uB, uA, uBp and uAp
-d_PB_uB = insert_node!(graph, make_node(DataTask(6)))
-d_PA_uA = insert_node!(graph, make_node(DataTask(6)))
-d_PBp_uBp = insert_node!(graph, make_node(DataTask(6)))
-d_PAp_uAp = insert_node!(graph, make_node(DataTask(6)))
+d_PB_uB = insert_node!(graph, DataTask(6))
+d_PA_uA = insert_node!(graph, DataTask(6))
+d_PBp_uBp = insert_node!(graph, DataTask(6))
+d_PAp_uAp = insert_node!(graph, DataTask(6))
 
 # P computes PB, PA, PBp and PAp
-PB = insert_node!(graph, make_node(ComputeTaskABC_P()))
-PA = insert_node!(graph, make_node(ComputeTaskABC_P()))
-PBp = insert_node!(graph, make_node(ComputeTaskABC_P()))
-PAp = insert_node!(graph, make_node(ComputeTaskABC_P()))
+PB = insert_node!(graph, ComputeTaskABC_P())
+PA = insert_node!(graph, ComputeTaskABC_P())
+PBp = insert_node!(graph, ComputeTaskABC_P())
+PAp = insert_node!(graph, ComputeTaskABC_P())
 
 # entry nodes getting data for P computes
-d_PB = insert_node!(graph, make_node(DataTask(4)))
-d_PA = insert_node!(graph, make_node(DataTask(4)))
-d_PBp = insert_node!(graph, make_node(DataTask(4)))
-d_PAp = insert_node!(graph, make_node(DataTask(4)))
+d_PB = insert_node!(graph, DataTask(4))
+d_PA = insert_node!(graph, DataTask(4))
+d_PBp = insert_node!(graph, DataTask(4))
+d_PAp = insert_node!(graph, DataTask(4))
 
 @test length(graph.nodes) == 26
 @test length(graph.dirtyNodes) == 0
