@@ -8,7 +8,7 @@ module QEDFeynman
 using QEDbase
 using QEDcore
 using QEDprocesses
-using GraphComputing
+using ComputableDAGs
 using TypeUtils
 using Base.Threads
 

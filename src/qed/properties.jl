@@ -1,4 +1,4 @@
-import GraphComputing: compute_effort, children
+import ComputableDAGs: compute_effort, children
 # compute effort numbers were measured on a home pc system using likwid
 
 """

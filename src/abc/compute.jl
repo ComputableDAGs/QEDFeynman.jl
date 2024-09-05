@@ -5,7 +5,7 @@ construction_string(::ParticleA) = "ParticleA()"
 construction_string(::ParticleB) = "ParticleB()"
 construction_string(::ParticleC) = "ParticleC()"
 
-function GraphComputing.input_expr(
+function ComputableDAGs.input_expr(
     instance::GenericABCProcess, name::String, psp_symbol::Symbol
 )
     (type, index) = type_index_from_name(ABCModel(), name)
@@ -25,7 +25,7 @@ Return the particle and value as is.
 
 0 FLOP.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskABC_P, data::ParticleValue{P}
 )::ParticleValue{P} where {P}
     return data
@@ -38,7 +38,7 @@ Compute an outer edge. Return the particle value with the same particle and the 
 
 1 FLOP.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskABC_U, data::ParticleValue{P}
 )::ParticleValue{P} where {P}
     return ParticleValue(data.p, data.v * ABC_outer_edge(data.p))
@@ -51,7 +51,7 @@ Compute a vertex. Preserve momentum and particle types (AB->C etc.) to create re
 
 6 FLOP.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskABC_V, data1::ParticleValue{P1}, data2::ParticleValue{P2}
 )::ParticleValue where {P1,P2}
     p3 = ABC_conserve_momentum(data1.p, data2.p)
@@ -68,7 +68,7 @@ For valid inputs, both input particles should have the same momenta at this poin
 
 12 FLOP.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskABC_S2, data1::ParticleValue{P}, data2::ParticleValue{P}
 )::Float64 where {P}
     #=
@@ -88,7 +88,7 @@ Compute inner edge (1 input particle, 1 output particle).
 
 11 FLOP.
 """
-function GraphComputing.compute(::ComputeTaskABC_S1, data::ParticleValue{P}) where {P}
+function ComputableDAGs.compute(::ComputeTaskABC_S1, data::ParticleValue{P}) where {P}
     return ParticleValue(data.p, data.v * ABC_inner_edge(propagated_particle(data.p)))
 end
 
@@ -100,11 +100,11 @@ Compute a sum over the vector. Use an algorithm that accounts for accumulated er
 
 Linearly many FLOP with growing data.
 """
-function GraphComputing.compute(::ComputeTaskABC_Sum, data...)::Float64
+function ComputableDAGs.compute(::ComputeTaskABC_Sum, data...)::Float64
     return sum_kbn([data...])
 end
 
-function GraphComputing.compute(::ComputeTaskABC_Sum, data::AbstractArray)::Float64
+function ComputableDAGs.compute(::ComputeTaskABC_Sum, data::AbstractArray)::Float64
     s = 0.0im
     for d in data
         s += d

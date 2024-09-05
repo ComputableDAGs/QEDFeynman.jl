@@ -1,5 +1,5 @@
 using QEDFeynman
-using GraphComputing
+using ComputableDAGs
 using QEDbase
 using QEDcore
 using QEDprocesses

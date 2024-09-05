@@ -160,7 +160,7 @@ function String(::Type{ParticleC})
 end
 String(p::ABCParticle) = String(typeof(p))
 
-function GraphComputing.input_type(p::GenericABCProcess)
+function ComputableDAGs.input_type(p::GenericABCProcess)
     in_t = _assemble_tuple_type(incoming_particles(p), Incoming())
     out_t = _assemble_tuple_type(outgoing_particles(p), Outgoing())
     return AbstractPhaseSpacePoint{

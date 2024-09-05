@@ -20,10 +20,10 @@ jobs:
           version: "1.10"
       - name: Install dependencies
         run: |
-          julia --project=docs/ -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/GraphComputing-jl/registry.git")); Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/JuliaRegistries/General"));'
+          julia --project=docs/ -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/ComputableDAGs/registry.git")); Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/JuliaRegistries/General"));'
           julia --project=docs/ -e 'using Pkg; Pkg.add(url="https://github.com/QEDjl-project/QEDprocesses.jl/"); Pkg.add(url="https://github.com/QEDjl-project/QEDbase.jl/")'
           julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
-          julia --project=docs/ -e 'using Pkg; Pkg.add(url="https://github.com/GraphComputing-jl/GraphComputing.jl/")'
+          julia --project=docs/ -e 'using Pkg; Pkg.add(url="https://github.com/ComputableDAGs/ComputableDAGs.jl/")'
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # If authenticating with GitHub Actions token

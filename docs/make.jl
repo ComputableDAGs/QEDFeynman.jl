@@ -10,18 +10,16 @@ makedocs(;
     modules=[QEDFeynman],
     checkdocs=:exports,
     authors="Anton Reinhard",
-    repo=Documenter.Remotes.GitHub("GraphComputing-jl", "QEDFeynman.jl"),
+    repo=Documenter.Remotes.GitHub("ComputableDAGs", "QEDFeynman.jl"),
     sitename="QEDFeynman.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://graphcomputing.gitlab.io/QEDFeynman.jl",
+        canonical="https://ComputableDAGs.gitlab.io/QEDFeynman.jl",
         assets=String[],
         size_threshold_ignore=["index.md"],
     ),
     pages=["index.md"],
 )
 deploydocs(;
-    repo="github.com/GraphComputing-jl/QEDFeynman.jl.git",
-    push_preview=false,
-    devbranch="main",
+    repo="github.com/ComputableDAGs/QEDFeynman.jl.git", push_preview=false, devbranch="main"
 )

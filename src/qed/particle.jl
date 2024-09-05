@@ -45,7 +45,7 @@ function spin_or_pol(
     return spin_pols(process, DIR())[i]
 end
 
-function GraphComputing.input_type(p::ScatteringProcess)
+function ComputableDAGs.input_type(p::ScatteringProcess)
     in_t = _assemble_tuple_type(incoming_particles(p), Incoming())
     out_t = _assemble_tuple_type(outgoing_particles(p), Outgoing())
     return AbstractPhaseSpacePoint{

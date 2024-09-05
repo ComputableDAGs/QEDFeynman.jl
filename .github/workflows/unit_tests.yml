@@ -28,7 +28,7 @@ jobs:
 
       - name: Instantiate
         run: |
-          julia --project=./ -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/GraphComputing-jl/registry.git")); Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/JuliaRegistries/General"));'
+          julia --project=./ -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/ComputableDAGs/registry.git")); Pkg.Registry.add(Pkg.RegistrySpec(url="https://github.com/JuliaRegistries/General"));'
           julia --project=./ -e 'using Pkg; Pkg.add(url="https://github.com/QEDjl-project/QEDprocesses.jl/"); Pkg.add(url="https://github.com/QEDjl-project/QEDbase.jl/")'
           julia --project=./ -e 'using Pkg; Pkg.instantiate()'
 

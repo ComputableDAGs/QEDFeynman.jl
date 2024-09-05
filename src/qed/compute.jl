@@ -9,7 +9,7 @@ construction_string(::PolY) = "PolY()"
 construction_string(::SpinUp) = "SpinUp()"
 construction_string(::SpinDown) = "SpinDown()"
 
-function GraphComputing.input_expr(
+function ComputableDAGs.input_expr(
     instance::ScatteringProcess, name::String, psp_symbol::Symbol
 )
     (type, index) = type_index_from_name(QEDModel(), name)
@@ -28,7 +28,7 @@ end
 
 Compute an outer edge. Return the particle value with the same particle and the value multiplied by an outer_edge factor.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskQED_U, data::ParticleValueSP{P,SP,V}
 ) where {P<:ParticleStateful,V<:ValueType,SP<:AbstractSpinOrPolarization}
     part::P = data.p
@@ -46,7 +46,7 @@ end
 
 Compute a vertex. Preserve momentum and particle types (e + gamma->p etc.) to create resulting particle, multiply values together and times a vertex factor.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskQED_V, data1::ParticleValue{P1,V1}, data2::ParticleValue{P2,V2}
 ) where {P1<:ParticleStateful,P2<:ParticleStateful,V1<:ValueType,V2<:ValueType}
     p3 = QED_conserve_momentum(data1.p, data2.p)
@@ -75,7 +75,7 @@ For valid inputs, both input particles should have the same momenta at this poin
 
 12 FLOP.
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskQED_S2, data1::ParticleValue{P1,V1}, data2::ParticleValue{P2,V2}
 ) where {
     D1<:ParticleDirection,
@@ -100,7 +100,7 @@ function GraphComputing.compute(
     end
 end
 
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskQED_S2,
     data1::ParticleValue{ParticleStateful{D1,Photon},V1},
     data2::ParticleValue{ParticleStateful{D2,Photon},V2},
@@ -116,7 +116,7 @@ end
 
 Compute inner edge (1 input particle, 1 output particle).
 """
-function GraphComputing.compute(
+function ComputableDAGs.compute(
     ::ComputeTaskQED_S1, data::ParticleValue{P,V}
 ) where {P<:ParticleStateful,V<:ValueType}
     new_p = propagated_particle(data.p)
@@ -136,7 +136,7 @@ Compute a sum over the vector. Use an algorithm that accounts for accumulated er
 
 Linearly many FLOP with growing data.
 """
-function GraphComputing.compute(::ComputeTaskQED_Sum, data...)::ComplexF64
+function ComputableDAGs.compute(::ComputeTaskQED_Sum, data...)::ComplexF64
     # TODO: want to use sum_kbn here but it doesn't seem to support ComplexF64, do it element-wise?
     s = 0.0im
     for d in data
@@ -145,7 +145,7 @@ function GraphComputing.compute(::ComputeTaskQED_Sum, data...)::ComplexF64
     return s
 end
 
-function GraphComputing.compute(::ComputeTaskQED_Sum, data::AbstractArray)::ComplexF64
+function ComputableDAGs.compute(::ComputeTaskQED_Sum, data::AbstractArray)::ComplexF64
     # TODO: want to use sum_kbn here but it doesn't seem to support ComplexF64, do it element-wise?
     s = 0.0im
     for d in data
