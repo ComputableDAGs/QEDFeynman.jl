@@ -1,5 +1,5 @@
 using QEDFeynman
-using GraphComputing
+using ComputableDAGs
 
 S1 = QEDFeynman.ComputeTaskABC_S1()
 S2 = QEDFeynman.ComputeTaskABC_S2()

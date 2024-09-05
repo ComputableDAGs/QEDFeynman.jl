@@ -1,5 +1,5 @@
 using QEDFeynman
-using GraphComputing
+using ComputableDAGs
 using Random
 
 RNG = Random.MersenneTwister(0)

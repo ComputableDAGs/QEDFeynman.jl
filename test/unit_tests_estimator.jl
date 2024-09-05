@@ -1,5 +1,5 @@
 using QEDFeynman
-using GraphComputing
+using ComputableDAGs
 
 function test_op_specific(estimator, graph, nr::NodeReduction)
     estimate = operation_effect(estimator, graph, nr)

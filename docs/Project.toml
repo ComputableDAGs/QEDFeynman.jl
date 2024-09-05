@@ -1,7 +1,7 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
-GraphComputing = "62933717-1c9d-4a3f-b06f-7ab7f17ca32d"
+ComputableDAGs = "62933717-1c9d-4a3f-b06f-7ab7f17ca32d"
 QEDFeynman = "e5b388bf-6b77-4673-a798-c68c587e2b22"
 QEDbase = "10e22c08-3ccb-4172-bfcf-7d7aa3d04d93"
 QEDprocesses = "46de9c38-1bb3-4547-a1ec-da24d767fdad"

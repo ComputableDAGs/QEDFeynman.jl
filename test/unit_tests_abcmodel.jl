@@ -1,5 +1,5 @@
 using QEDFeynman
-using GraphComputing
+using ComputableDAGs
 using QEDcore
 
 import QEDFeynman.interaction_result

@@ -1,5 +1,5 @@
 using QEDFeynman
-using GraphComputing
+using ComputableDAGs
 
 nC1 = make_node(QEDFeynman.ComputeTaskABC_U())
 nC2 = make_node(QEDFeynman.ComputeTaskABC_V())

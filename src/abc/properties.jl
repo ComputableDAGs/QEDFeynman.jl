@@ -1,4 +1,4 @@
-import GraphComputing: compute_effort, children
+import ComputableDAGs: compute_effort, children
 
 """
     compute_effort(t::ComputeTaskABC_S1)
