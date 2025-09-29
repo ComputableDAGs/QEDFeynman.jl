@@ -63,7 +63,7 @@ Read an ABC-model process from the given file. If `verbose` is set to true, prin
 
 Returns a valid `DAG`.
 """
-function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::Bool=false)
+function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::Bool = false)
     file = open(filename, "r")
 
     if (verbose)
@@ -93,19 +93,21 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
     insert_edge!(graph, sum_node, global_data_out)
 
     # remember the data out nodes for connection
-    dataOutNodes = Dict()
+    data_out_nodes = Dict()
 
     if (verbose)
         println("Building graph")
     end
-    noNodes = 0
+    number_of_nodes = 0
     nodesToRead = length(nodes)
     while !isempty(nodes)
         node = popfirst!(nodes)
-        noNodes += 1
-        if (noNodes % 100 == 0)
+        number_of_nodes += 1
+        if (number_of_nodes % 100 == 0)
             if (verbose)
-                percent = string(round(100.0 * noNodes / nodesToRead; digits=2), "%")
+                percent = string(
+                    round(100.0 * number_of_nodes / nodesToRead; digits = 2), "%"
+                )
                 print("\rReading Nodes... $percent")
             end
         end
@@ -114,18 +116,14 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
 
             # add nodes and edges for the state reading to u(P(Particle))
             data_in = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE), name) # read particle data node
-            compute_P = insert_node!(graph, ComputeTaskABC_P()) # compute P node
-            data_Pu = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE)) # transfer data from P to u (one ParticleValue object)
             compute_u = insert_node!(graph, ComputeTaskABC_U()) # compute U node
             data_out = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE)) # transfer data out from u (one ParticleValue object)
 
-            insert_edge!(graph, data_in, compute_P)
-            insert_edge!(graph, compute_P, data_Pu)
-            insert_edge!(graph, data_Pu, compute_u)
+            insert_edge!(graph, data_in, compute_u)
             insert_edge!(graph, compute_u, data_out)
 
             # remember the data_out node for future edges
-            dataOutNodes[node] = data_out
+            data_out_nodes[node] = data_out
         elseif occursin(regex_c, node)
             capt = match(regex_c, node)
 
@@ -140,12 +138,12 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
                 compute_S = insert_node!(graph, ComputeTaskABC_S1())
                 data_S_v = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
-                insert_edge!(graph, dataOutNodes[in1], compute_S)
+                insert_edge!(graph, data_out_nodes[in1], compute_S)
                 insert_edge!(graph, compute_S, data_S_v)
 
                 insert_edge!(graph, data_S_v, compute_v)
             else
-                insert_edge!(graph, dataOutNodes[in1], compute_v)
+                insert_edge!(graph, data_out_nodes[in1], compute_v)
             end
 
             if (occursin(regex_c, in2))
@@ -154,16 +152,16 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
                 compute_S = insert_node!(graph, ComputeTaskABC_S1())
                 data_S_v = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
-                insert_edge!(graph, dataOutNodes[in2], compute_S)
+                insert_edge!(graph, data_out_nodes[in2], compute_S)
                 insert_edge!(graph, compute_S, data_S_v)
 
                 insert_edge!(graph, data_S_v, compute_v)
             else
-                insert_edge!(graph, dataOutNodes[in2], compute_v)
+                insert_edge!(graph, data_out_nodes[in2], compute_v)
             end
 
             insert_edge!(graph, compute_v, data_out)
-            dataOutNodes[node] = data_out
+            data_out_nodes[node] = data_out
 
         elseif occursin(regex_m, node)
             # assume for now that only the first particle of the three is combined and the other two are "original" ones
@@ -176,8 +174,8 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             compute_v = insert_node!(graph, ComputeTaskABC_V())
             data_v = insert_node!(graph, DataTask(PARTICLE_VALUE_SIZE))
 
-            insert_edge!(graph, dataOutNodes[in2], compute_v)
-            insert_edge!(graph, dataOutNodes[in3], compute_v)
+            insert_edge!(graph, data_out_nodes[in2], compute_v)
+            insert_edge!(graph, data_out_nodes[in3], compute_v)
             insert_edge!(graph, compute_v, data_v)
 
             # combine with the v of the combined other input
@@ -185,7 +183,7 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             data_out = insert_node!(graph, DataTask(FLOAT_SIZE)) # output of a S2 task is only a float
 
             insert_edge!(graph, data_v, compute_S2)
-            insert_edge!(graph, dataOutNodes[in1], compute_S2)
+            insert_edge!(graph, data_out_nodes[in1], compute_S2)
             insert_edge!(graph, compute_S2, data_out)
 
             insert_edge!(graph, data_out, sum_node)
@@ -199,14 +197,6 @@ function parse_dag(filename::AbstractString, proc::GenericABCProcess, verbose::B
             @assert false ("Unknown node '$node' while reading from file $filename")
         end
     end
-
-    #put all nodes into dirty nodes set
-    graph.dirtyNodes = copy(graph.nodes)
-
-    if (verbose)
-        println("Generating the graph's properties")
-    end
-    graph.properties = GraphProperties(graph)
 
     if (verbose)
         println("Done")

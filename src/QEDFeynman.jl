@@ -16,7 +16,6 @@ using Base.Threads
 export ParticleValue
 export ParticleA, ParticleB, ParticleC
 export ABCParticle, GenericABCProcess, ABCModel, PerturbativeABC
-export ComputeTaskABC_P
 export ComputeTaskABC_S1
 export ComputeTaskABC_S2
 export ComputeTaskABC_V
@@ -28,13 +27,12 @@ export parse_dag
 # QED model
 export FeynmanDiagram, FeynmanVertex, FeynmanTie, FeynmanParticle
 export QEDModel
-export ComputeTaskQED_P
 export ComputeTaskQED_S1
 export ComputeTaskQED_S2
 export ComputeTaskQED_V
 export ComputeTaskQED_U
 export ComputeTaskQED_Sum
-export gen_graph
+export graph
 
 export ParticleValue, ParticleValueSP
 

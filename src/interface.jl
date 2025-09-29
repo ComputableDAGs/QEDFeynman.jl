@@ -5,7 +5,7 @@ import QEDbase.AbstractParticle
 
 Base type for a model, e.g. ABC-Model or QED. This is used to dispatch many functions.
 """
-abstract type AbstractPhysicsModel <: AbstractModel end
+abstract type AbstractPhysicsModel end
 
 """
     ParticleValue{ParticleType <: AbstractParticleStateful}
@@ -14,7 +14,7 @@ A struct describing a particle during a calculation of a Feynman Diagram, togeth
 
 `sizeof(ParticleValue())` = 48 Byte
 """
-struct ParticleValue{ParticleType<:AbstractParticleStateful,ValueType}
+struct ParticleValue{ParticleType <: AbstractParticleStateful, ValueType}
     p::ParticleType
     v::ValueType
 end
@@ -25,8 +25,8 @@ TBW
 particle value + spin/pol info, only used on the external legs (u tasks)
 """
 struct ParticleValueSP{
-    ParticleType<:AbstractParticleStateful,SP<:AbstractSpinOrPolarization,ValueType
-}
+        ParticleType <: AbstractParticleStateful, SP <: AbstractSpinOrPolarization, ValueType,
+    }
     p::ParticleType
     v::ValueType
     sp::SP
@@ -99,9 +99,9 @@ Return the model of this process description or input.
 function model end
 
 """
-    type_from_name(model::AbstractModel, name::String)
+    type_from_name(model::AbstractPhysicsModel, name::String)
 
-For a name of a particle in the given `AbstractModel`, return the particle's `Type` and index as a tuple. The input string can be expetced to be of the form \"<name><index>\".
+For a name of a particle in the given `AbstractPhysicsModel`, return the particle's `Type` and index as a tuple. The input string can be expetced to be of the form \"<name><index>\".
 """
 function type_index_from_name end
 
@@ -113,4 +113,4 @@ Return the [`ParticleValue`](@ref) of the given type of particle with the given 
 Function is wrapped into a `FunctionCall` in `gen_input_assignment_code`.
 """
 part_from_x(type::Type, index::Int, x::AbstractProcessInput) =
-    ParticleValue{type,ComplexF64}(get_particle(x, type, index), one(ComplexF64))
+    ParticleValue{type, ComplexF64}(get_particle(x, type, index), one(ComplexF64))

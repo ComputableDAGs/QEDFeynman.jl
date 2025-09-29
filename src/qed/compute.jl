@@ -10,8 +10,8 @@ construction_string(::SpinUp) = "SpinUp()"
 construction_string(::SpinDown) = "SpinDown()"
 
 function ComputableDAGs.input_expr(
-    instance::ScatteringProcess, name::String, psp_symbol::Symbol
-)
+        instance::ScatteringProcess, name::String, psp_symbol::Symbol
+    )
     (type, index) = type_index_from_name(QEDModel(), name)
 
     return Meta.parse(
@@ -29,13 +29,13 @@ end
 Compute an outer edge. Return the particle value with the same particle and the value multiplied by an outer_edge factor.
 """
 function ComputableDAGs.compute(
-    ::ComputeTaskQED_U, data::ParticleValueSP{P,SP,V}
-) where {P<:ParticleStateful,V<:ValueType,SP<:AbstractSpinOrPolarization}
+        ::ComputeTaskQED_U, data::ParticleValueSP{P, SP, V}
+    ) where {P <: ParticleStateful, V <: ValueType, SP <: AbstractSpinOrPolarization}
     part::P = data.p
     state = base_state(
         particle_species(part), particle_direction(part), momentum(part), SP()
     )
-    return ParticleValue{P,typeof(state)}(
+    return ParticleValue{P, typeof(state)}(
         data.p,
         state, # will return a SLorentzVector{ComplexF64}, BiSpinor or AdjointBiSpinor
     )
@@ -47,19 +47,24 @@ end
 Compute a vertex. Preserve momentum and particle types (e + gamma->p etc.) to create resulting particle, multiply values together and times a vertex factor.
 """
 function ComputableDAGs.compute(
-    ::ComputeTaskQED_V, data1::ParticleValue{P1,V1}, data2::ParticleValue{P2,V2}
-) where {P1<:ParticleStateful,P2<:ParticleStateful,V1<:ValueType,V2<:ValueType}
+        ::ComputeTaskQED_V, data1::ParticleValue{P1, V1}, data2::ParticleValue{P2, V2}
+    ) where {P1 <: ParticleStateful, P2 <: ParticleStateful, V1 <: ValueType, V2 <: ValueType}
     p3 = QED_conserve_momentum(data1.p, data2.p)
     state = QED_vertex()
-    if (typeof(data1.v) <: AdjointBiSpinor)
-        state = data1.v * state
+    if data1.v isa AdjointBiSpinor
+        @assert !(data2.v isa AdjointBiSpinor)
+        state = data1.v * state * data2.v
+    elseif data1.v isa BiSpinor
+        @assert !(data2.v isa BiSpinor)
+        state = data2.v * state * data1.v
+    elseif data2.v isa AdjointBiSpinor
+        @assert !(data1.v isa AdjointBiSpinor)
+        state = data2.v * state * data1.v
+    elseif data2.v isa BiSpinor
+        @assert !(data1.v isa BiSpinor)
+        state = data1.v * state * data2.v
     else
-        state = state * data1.v
-    end
-    if (typeof(data2.v) <: AdjointBiSpinor)
-        state = data2.v * state
-    else
-        state = state * data2.v
+        @assert "invalid V task inputs"
     end
 
     dataOut = ParticleValue(p3, state)
@@ -76,21 +81,24 @@ For valid inputs, both input particles should have the same momenta at this poin
 12 FLOP.
 """
 function ComputableDAGs.compute(
-    ::ComputeTaskQED_S2, data1::ParticleValue{P1,V1}, data2::ParticleValue{P2,V2}
-) where {
-    D1<:ParticleDirection,
-    D2<:ParticleDirection,
-    S1<:Union{Electron,Positron},
-    S2<:Union{Electron,Positron},
-    V1<:ValueType,
-    V2<:ValueType,
-    EL<:AbstractFourMomentum,
-    P1<:ParticleStateful{D1,S1,EL},
-    P2<:ParticleStateful{D2,S2,EL},
-}
-    #@assert isapprox(data1.p.momentum, data2.p.momentum, rtol = sqrt(eps()), atol = sqrt(eps())) "$(data1.p.momentum) vs. $(data2.p.momentum)"
+        ::ComputeTaskQED_S2, data1::ParticleValue{P1, V1}, data2::ParticleValue{P2, V2}
+    ) where {
+        D1 <: ParticleDirection,
+        D2 <: ParticleDirection,
+        S1 <: Union{Electron, Positron},
+        S2 <: Union{Electron, Positron},
+        V1 <: ValueType,
+        V2 <: ValueType,
+        EL <: AbstractFourMomentum,
+        P1 <: ParticleStateful{D1, S1, EL},
+        P2 <: ParticleStateful{D2, S2, EL},
+    }
+    inner1 = QED_inner_edge(data1.p)
+    inner2 = QED_inner_edge(data2.p)
 
-    inner = QED_inner_edge(propagated_particle(data1.p))
+    # TODO: This is broken. It's currently not possible (i think) to find out which of the two is the correct
+    # inner edge value to take. Likely the graph building has to be changed to provide the correct one first or similar.
+    inner = is_outgoing(data1.p) ? inner1 : inner2
 
     # inner edge is just a "scalar", data1 and data2 are bispinor/adjointbispinnor, need to keep correct order
     if typeof(data1.v) <: BiSpinor
@@ -101,13 +109,17 @@ function ComputableDAGs.compute(
 end
 
 function ComputableDAGs.compute(
-    ::ComputeTaskQED_S2,
-    data1::ParticleValue{ParticleStateful{D1,Photon},V1},
-    data2::ParticleValue{ParticleStateful{D2,Photon},V2},
-) where {D1<:ParticleDirection,D2<:ParticleDirection,V1<:ValueType,V2<:ValueType}
+        ::ComputeTaskQED_S2,
+        data1::ParticleValue{ParticleStateful{D1, Photon}, V1},
+        data2::ParticleValue{ParticleStateful{D2, Photon}, V2},
+    ) where {D1 <: ParticleDirection, D2 <: ParticleDirection, V1 <: ValueType, V2 <: ValueType}
     # TODO: assert that data1 and data2 are opposites
+    @assert isapprox(
+        momentum(data1.p), momentum(data2.p), rtol = sqrt(eps()), atol = sqrt(eps())
+    ) "$(momentum(data1.p)) vs. $(momentum(data2.p))"
+
     inner = QED_inner_edge(data1.p)
-    # inner edge is just a scalar, data1 and data2 are photon states that are just Complex numbers here
+
     return data1.v * inner * data2.v
 end
 
@@ -117,14 +129,15 @@ end
 Compute inner edge (1 input particle, 1 output particle).
 """
 function ComputableDAGs.compute(
-    ::ComputeTaskQED_S1, data::ParticleValue{P,V}
-) where {P<:ParticleStateful,V<:ValueType}
+        ::ComputeTaskQED_S1, data::ParticleValue{P, V}
+    ) where {P <: ParticleStateful, V <: ValueType}
+    inner = QED_inner_edge(data.p)
     new_p = propagated_particle(data.p)
     # inner edge is just a scalar, can multiply from either side
     if typeof(data.v) <: BiSpinor
-        return ParticleValue(new_p, QED_inner_edge(new_p) * data.v)
+        return ParticleValue(new_p, inner * data.v)
     else
-        return ParticleValue(new_p, data.v * QED_inner_edge(new_p))
+        return ParticleValue(new_p, data.v * inner)
     end
 end
 
@@ -132,24 +145,24 @@ end
     compute(::ComputeTaskQED_Sum, data...)
     compute(::ComputeTaskQED_Sum, data::AbstractArray)
 
-Compute a sum over the vector. Use an algorithm that accounts for accumulated errors in long sums with potentially large differences in magnitude of the summands.
+Compute a sum over the vector and return the `abs2()` of it.
 
 Linearly many FLOP with growing data.
 """
-function ComputableDAGs.compute(::ComputeTaskQED_Sum, data...)::ComplexF64
+function ComputableDAGs.compute(::ComputeTaskQED_Sum, data...)
     # TODO: want to use sum_kbn here but it doesn't seem to support ComplexF64, do it element-wise?
     s = 0.0im
     for d in data
         s += d
     end
-    return s
+    return abs2(s)
 end
 
-function ComputableDAGs.compute(::ComputeTaskQED_Sum, data::AbstractArray)::ComplexF64
+function ComputableDAGs.compute(::ComputeTaskQED_Sum, data::AbstractArray)
     # TODO: want to use sum_kbn here but it doesn't seem to support ComplexF64, do it element-wise?
     s = 0.0im
     for d in data
         s += d
     end
-    return s
+    return abs2(s)
 end

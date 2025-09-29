@@ -6,11 +6,11 @@ Singleton definition for identification of the ABC-Model.
 struct ABCModel <: AbstractPhysicsModel end
 
 """
-    PerturbativeABC <: AbstractModel
+    PerturbativeABC <: AbstractModelDefinition
 
 The model being used for the ABC model.
 """
-struct PerturbativeABC <: AbstractModelDefinition end
+struct PerturbativeABC <: QEDbase.AbstractModelDefinition end
 
 """
     ABCParticle
@@ -55,13 +55,6 @@ S task with two children.
 struct ComputeTaskABC_S2 <: AbstractComputeTask end
 
 """
-    ComputeTaskABC_P <: AbstractComputeTask
-
-P task with no children.
-"""
-struct ComputeTaskABC_P <: AbstractComputeTask end
-
-"""
     ComputeTaskABC_V <: AbstractComputeTask
 
 v task with two children.
@@ -92,7 +85,6 @@ Constant vector of all tasks of the ABC-Model.
 ABC_TASKS = [
     ComputeTaskABC_S1,
     ComputeTaskABC_S2,
-    ComputeTaskABC_P,
     ComputeTaskABC_V,
     ComputeTaskABC_U,
     ComputeTaskABC_Sum,

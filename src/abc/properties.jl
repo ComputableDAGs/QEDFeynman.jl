@@ -29,16 +29,9 @@ Return the compute effort of a V task.
 compute_effort(t::ComputeTaskABC_V)::Float64 = 6.0
 
 """
-    compute_effort(t::ComputeTaskABC_P)
-
-Return the compute effort of a P task.
-"""
-compute_effort(t::ComputeTaskABC_P)::Float64 = 0.0
-
-"""
     compute_effort(t::ComputeTaskABC_Sum)
 
-Return the compute effort of a Sum task. 
+Return the compute effort of a Sum task.
 
 Note: This is a constant compute effort, even though sum scales with the number of its inputs. Since there is only ever a single sum node in a graph generated from the ABC-Model,
 this doesn't matter.
@@ -58,13 +51,6 @@ children(::ComputeTaskABC_S1) = 1
 Return the number of children of a ComputeTaskABC_S2 (always 2).
 """
 children(::ComputeTaskABC_S2) = 2
-
-"""
-    children(::ComputeTaskABC_P)
-
-Return the number of children of a ComputeTaskABC_P (always 1).
-"""
-children(::ComputeTaskABC_P) = 1
 
 """
     children(::ComputeTaskABC_U)
